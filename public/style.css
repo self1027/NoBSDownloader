@@ -164,6 +164,26 @@ hr { margin: 40px 0; border: none; border-top: 2px dotted #e0e0e0; }
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
 }
 
+.loading-btn {
+    background: #555 !important;
+    color: #fff !important;
+    cursor: wait;
+    animation: pulse 1.5s infinite;
+    border-color: transparent !important;
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+.btn-dl {
+    min-width: 140px;
+    text-align: center;
+    transition: all 0.3s ease;
+}
+
 @media (max-width: 600px) {
     .input-group { flex-direction: column; }
     .download-options { grid-template-columns: 1fr; }

@@ -10,7 +10,6 @@ async function buscar() {
         return;
     }
 
-    // Feedback visual de carregamento
     loading.style.display = "block";
     mainContent.style.display = "none";
 
@@ -20,7 +19,7 @@ async function buscar() {
         
         const data = await res.json();
 
-        // 1. Lógica de Thumbnail (Privacidade Meta/Facebook)
+        //Lógica de Thumbnail (Tratamento para restrições de Meta/Facebook)
         const isFromMeta = data.thumbnail && data.thumbnail.includes("fbcdn.net");
         const thumbnailHTML = isFromMeta 
             ? `<div style="text-align:center">
@@ -29,7 +28,7 @@ async function buscar() {
                </div>`
             : `<img src="${data.thumbnail}" class="thumb-img" referrerpolicy="no-referrer" onerror="this.src='img/Sad-Face.svg';">`;
 
-        // 2. Renderiza o Card de Preview com Limite de Download dinâmico
+        //Renderiza o Card de Preview
         videoPreview.innerHTML = `
             ${thumbnailHTML}
             <div>
@@ -41,7 +40,42 @@ async function buscar() {
             </div>
         `;
 
-        // 3. Renderiza Vídeos (MP4)
+        const realizarDownload = async (btn, downloadUrl, fileName) => {
+            const originalText = btn.innerText;
+            
+            btn.classList.add("loading-btn");
+            btn.innerText = "Preparando...";
+            btn.style.pointerEvents = "none"; 
+
+            try {
+                const response = await fetch(downloadUrl);
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    throw new Error(errorText || "Erro no servidor");
+                }
+
+                const blob = await response.blob();
+                const urlBlob = window.URL.createObjectURL(blob);
+                
+                const a = document.createElement("a");
+                a.href = urlBlob;
+                a.download = fileName;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(urlBlob);
+
+            } catch (err) {
+                console.error(err);
+                alert(`Erro: ${err.message}`);
+            } finally {
+                btn.classList.remove("loading-btn");
+                btn.innerText = originalText;
+                btn.style.pointerEvents = "auto";
+            }
+        };
+
+        //Renderiza Vídeos (MP4)
         const videoList = document.getElementById("video-list");
         videoList.innerHTML = ""; 
         data.video.forEach(f => {
@@ -51,12 +85,13 @@ async function buscar() {
             btn.innerText = `MP4 ${f.resolution}`;
             btn.onclick = (e) => {
                 e.preventDefault();
-                window.open(`/download?url=${encodeURIComponent(url)}&format=${f.format_id}`);
+                const dlUrl = `/download?url=${encodeURIComponent(url)}&format=${f.format_id}`;
+                realizarDownload(btn, dlUrl, `${data.title}_${f.resolution}.mp4`);
             };
             videoList.appendChild(btn);
         });
 
-        // 4. Renderiza MP3 (Com Filtro de Bitrate)
+        //Renderiza MP3 (Com Filtro de Bitrate)
         const audioList = document.getElementById("audio-list");
         audioList.innerHTML = ""; 
         
@@ -70,12 +105,13 @@ async function buscar() {
             btn.innerText = `MP3 ${rate}kbps`;
             btn.onclick = (e) => {
                 e.preventDefault();
-                window.open(`/download?url=${encodeURIComponent(url)}&type=mp3&bitrate=${rate}`);
+                const dlUrl = `/download?url=${encodeURIComponent(url)}&type=mp3&bitrate=${rate}`;
+                realizarDownload(btn, dlUrl, `${data.title}.mp3`);
             };
             audioList.appendChild(btn);
         });
 
-        // 5. Adiciona Áudio Original
+        //Adiciona Áudio Original (M4A/WebM)
         data.audio.forEach(f => {
             const bitrateText = f.abr ? `${Math.round(f.abr)}kbps` : "Original";
             const btn = document.createElement("a");
@@ -85,18 +121,38 @@ async function buscar() {
             btn.innerText = `${f.ext.toUpperCase()} ${bitrateText}`;
             btn.onclick = (e) => {
                 e.preventDefault();
-                window.open(`/download?url=${encodeURIComponent(url)}&format=${f.format_id}`);
+                const dlUrl = `/download?url=${encodeURIComponent(url)}&format=${f.format_id}`;
+                realizarDownload(btn, dlUrl, `${data.title}.${f.ext}`);
             };
             audioList.appendChild(btn);
         });
 
-        // Exibe o conteúdo e esconde o loading
         loading.style.display = "none";
         mainContent.style.display = "block";
 
     } catch (e) {
         console.error(e);
-        alert("Não foi possível obter informações do vídeo. Verifique a URL.");
+        alert("Não foi possível obter informações do vídeo. Verifique a URL ou os cookies do servidor.");
         loading.style.display = "none";
+    }
+}
+
+async function colarDoClipboard() {
+    const urlInput = document.getElementById("url");
+    const btnColar = document.getElementById("btn-colar");
+
+    try {
+        const texto = await navigator.clipboard.readText();
+        
+        if (texto) {
+            urlInput.value = texto;
+            
+            const originalEmoji = btnColar.innerText;
+            btnColar.innerText = "✅";
+            setTimeout(() => btnColar.innerText = originalEmoji, 1000);
+        }
+    } catch (err) {
+        console.error("Erro ao acessar clipboard:", err);
+        alert("Erro: Permita o acesso à área de transferência no seu navegador.");
     }
 }

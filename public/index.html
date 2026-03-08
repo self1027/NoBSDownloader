@@ -22,7 +22,12 @@
             
             <div class="input-group">
                 <input type="text" id="url" placeholder="Cole a URL do vídeo (YouTube, Instagram, TikTok, etc...)">
-                <button onclick="buscar()" id="btn-buscar" class="link-button">Analisar URL</button>
+                
+                <button onclick="colarDoClipboard()" id="btn-colar" class="link-button" title="Colar da área de transferência">
+                    📋
+                </button>
+
+                <button onclick="buscar()" id="btn-buscar" class="link-button">Buscar</button>
             </div>
         </header>
 
