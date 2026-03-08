@@ -141,18 +141,17 @@ async function colarDoClipboard() {
     const urlInput = document.getElementById("url");
     const btnColar = document.getElementById("btn-colar");
 
-    try {
-        const texto = await navigator.clipboard.readText();
+    const texto = await navigator.clipboard.readText();
+    
+    if (texto) {
+        urlInput.value = texto;
         
-        if (texto) {
-            urlInput.value = texto;
-            
-            const originalEmoji = btnColar.innerText;
-            btnColar.innerText = "✅";
-            setTimeout(() => btnColar.innerText = originalEmoji, 1000);
-        }
-    } catch (err) {
-        console.error("Erro ao acessar clipboard:", err);
-        alert("Erro: Permita o acesso à área de transferência no seu navegador.");
+        btnColar.innerText = "✅";
+        setTimeout(() => {
+            btnColar.innerText = "📋";
+        }, 1000);
+        
+        urlInput.focus();
     }
+
 }
