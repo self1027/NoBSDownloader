@@ -1,0 +1,13 @@
+server:
+  port: 3000
+  max_concurrent_downloads: 1
+
+storage:
+  temp_folder: "./temp"
+
+binaries:
+  ffmpeg_path: "./ffmpeg.exe"
+  ytdlp_path: "./yt-dlp.exe"
+
+security:
+  max_file_size: "1G"

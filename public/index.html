@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>No BS Downloader | Murilo D.</title>
+    
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+    <link rel="shortcut icon" href="favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="NoBS DL" />
+    <link rel="manifest" href="favicon/site.webmanifest" />
+
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="hero-section">
+            <h1 class="name-title">No BS Downloader</h1>
+            <p class="role-subtitle">Mídia sem fricção, sem anúncios, sem bullshit.</p>
+            
+            <div class="input-group">
+                <input type="text" id="url" placeholder="Cole a URL do vídeo (YouTube, Instagram, TikTok, etc...)">
+                <button onclick="buscar()" id="btn-buscar" class="link-button">Analisar URL</button>
+            </div>
+        </header>
+
+        <main id="main-content" style="display: none;">
+            <hr>
+            <section id="result-section">
+                <div id="video-preview" class="project-card"></div>
+
+                <div class="download-options">
+                    <div id="video-formats" class="skill-category">
+                        <h3>Vídeo (MP4)</h3>
+                        <div id="video-list" class="format-grid"></div>
+                    </div>
+                    
+                    <div id="audio-formats" class="skill-category">
+                        <h3>Áudio</h3>
+                        <div id="audio-list" class="format-grid"></div>
+                    </div>
+                </div>
+            </section>
+        </main>
+
+        <div id="loading" class="bio" style="display: none;">
+            Solicitando metadados ao servidor...
+        </div>
+
+        <footer class="social-footer">
+            <hr>
+            <p>Desenvolvido por <strong>Murilo D.</strong></p>
+            <div class="social-links">
+                <a href="https://murilod.dev/" target="_blank" class="link-button">Portfólio</a>
+                <a href="https://www.linkedin.com/in/murilo-dias-dev/" target="_blank" class="link-button">LinkedIn</a>
+                <a href="https://github.com/self1027" target="_blank" class="link-button">GitHub</a>
+            </div>
+        </footer>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
